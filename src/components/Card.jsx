@@ -21,8 +21,6 @@ const Card = ({ tasks, setTasks, item, editTask, deleteTask }) => {
     )
   }
 
-  console.log(tasks)
-
   const showEdit = () => {
     setEdit(!edit)
   }

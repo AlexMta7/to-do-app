@@ -1,53 +1,73 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddButton from './components/AddButton'
 import AddTask from './components/AddTask'
 import Cards from './components/Cards'
+import { createTask, deleteTask, getTasks, updateTask } from './services/TaskServices'
 
 function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Task 1', completed: false },
-    { id: 2, title: 'Task 2', completed: true },
-    { id: 3, title: 'Task 3', completed: false },
-    { id: 4, title: 'Task 4', completed: true },
-    { id: 5, title: 'Task 5', completed: false },
-    { id: 6, title: 'Task 6', completed: true },
-    { id: 7, title: 'Task 7', completed: false },
-    { id: 8, title: 'Task 8', completed: true },
-    { id: 9, title: 'Task 9', completed: false },
-    { id: 10, title: 'Task 10', completed: true },
-  ])
-  // Shows the AddTask component
+  const [tasks, setTasks] = useState([])
+  // Shows AddTask component
   const [addTask, setAddTask] = useState(false)
 
-  const newTask = (task) => {
-    console.log(task)
-    setTasks([...tasks, { id: tasks.length + 1, title: task }])
+  useEffect(() => {
+    obtenerTasks()
+  }, [])
+
+  const obtenerTasks = async () => {
+    try {
+      const response = await getTasks()
+      setTasks(response.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const editTask = (item) => {
-    const { id, title, completed } = item
-    const newTasks = tasks.map((task) => {
-      if (task.id === id) {
-        if (task.title !== title || task.completed !== completed) {
-          task.title = title
-          task.completed = !completed
+  const newTask = async (task) => {
+    try {
+      const newTask = { title: task, completed: false }
+      const resp = await createTask(newTask)
+      // Obtener el id de la tarea creada
+      setTasks([
+        ...tasks,
+        { id: resp.data.id, title: resp.data.title, completed: resp.data.completed },
+      ])
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const editTask = async (item) => {
+    try {
+      const { id, title, completed } = item
+      const newTasks = tasks.map((task) => {
+        if (task.id === id) {
+          if (task.title !== title || task.completed !== completed) {
+            task.title = title
+            task.completed = !completed
+          }
         }
-      }
-      return task
-    })
-    setTasks(newTasks)
+        return task
+      })
+
+      await updateTask(item)
+      setTasks(newTasks)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const deleteTask = (id) => {
-    console.log(id)
-    setTasks(tasks.filter((task) => task.id !== id))
+  const deleteTaskById = async (id) => {
+    try {
+      await deleteTask(id)
+      setTasks(tasks.filter((task) => task.id !== id))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleShowAdd = () => {
     setAddTask(true)
   }
-
-  console.log(tasks)
 
   return (
     <div className='container d-flex flex-wrap  p-4 gap-3'>
@@ -55,7 +75,7 @@ function App() {
         tasks={tasks}
         setTasks={setTasks}
         editTask={editTask}
-        deleteTask={deleteTask}
+        deleteTask={deleteTaskById}
       />
       {addTask ? (
         <AddTask setAddTask={setAddTask} onClick={newTask} />
@@ -67,4 +87,3 @@ function App() {
 }
 
 export default App
-
