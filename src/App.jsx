@@ -16,7 +16,14 @@ function App() {
   const obtenerTasks = async () => {
     try {
       const response = await getTasks()
-      setTasks(response.data)
+      const lowerCaseTasks = response.data.map((obj) => {
+        const newObj = {}
+        for (const key in obj) {
+          newObj[key.toLowerCase()] = obj[key]
+        }
+        return newObj
+      })
+      setTasks(lowerCaseTasks)
     } catch (error) {
       console.error(error)
     }
@@ -68,6 +75,8 @@ function App() {
   const handleShowAdd = () => {
     setAddTask(true)
   }
+
+  console.log(tasks)
 
   return (
     <div className='container d-flex flex-wrap  p-4 gap-3'>
