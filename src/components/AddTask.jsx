@@ -13,7 +13,13 @@ const AddTask = ({ onClick, setAddTask }) => {
   return (
     <div className='card add-card' style={{ width: '32rem' }}>
       <div className='card-body d-flex gap-2'>
-        <input type='text' className='form-control' id='txtText' placeholder='Title' />
+        <input
+          type='text'
+          className='form-control'
+          id='txtText'
+          autoComplete='off'
+          placeholder='Title'
+        />
         <button className='btn text-nowrap btn-primary w-25' onClick={addTask}>
           Add
         </button>

@@ -79,7 +79,12 @@ function App() {
   console.log(tasks)
 
   return (
-    <div className='container d-flex flex-wrap  p-4 gap-3'>
+    <div className='container d-flex flex-wrap p-4 gap-3'>
+      {tasks.length === 0 && (
+        <div className='pt-5 ps-5'>
+          <h1>Create a new task to begin</h1>
+        </div>
+      )}
       <Cards
         tasks={tasks}
         setTasks={setTasks}
